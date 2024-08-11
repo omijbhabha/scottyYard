@@ -6,9 +6,9 @@ with open("stations.json", "r") as file:
 class Detective:
     def __init__(self, id):
         self.id = id
+        self.taxi_tickets = 10
         self.bus_tickets = 8
         self.underground_tickets = 4
-        self.taxi_tickets = 10
         self.current_node = None
     def getAvailableNodes(self):
         self.taxi_nodes_available = stations_data[self.current_node]["taxi"]
@@ -17,13 +17,25 @@ class Detective:
     def setNewNode(self):
         flag=0
         while flag==0:
+            print()
             print(f"TAXI NODES AVAILABLE: {self.taxi_nodes_available}")
             print(f"BUS NODES AVAILABLE: {self.bus_nodes_available}")
             print(f"UNDERGROUND NODES AVAILABLE: {self.underground_nodes_available}")
             new_node=input(f"ENTER THE NEXT NODE FOR DETECTIVE {self.id}: ")
-            if new_node in self.taxi_nodes_available or new_node in self.bus_nodes_available or new_node in self.underground_nodes_available:
+            if new_node in self.taxi_nodes_available:
                 self.current_node = new_node
                 self.getAvailableNodes()
+                self.taxi_tickets-=1
+                flag=1
+            elif new_node in self.bus_nodes_available:
+                self.current_node = new_node
+                self.getAvailableNodes()
+                self.bus_tickets-=1
+                flag=1
+            elif new_node in self.underground_nodes_available:
+                self.current_node = new_node
+                self.getAvailableNodes()
+                self.underground_tickets-=1
                 flag=1
             else:
                 print(f"INVALID ARGUMENT CAN NOT ACCESS THAT NODE!")
@@ -31,10 +43,9 @@ class Detective:
 def updateGame(detectives):
     for detective in detectives:
         detective.setNewNode()
-        print(f"DETECTIVE {detective.id} - STARTING NODE: {detective.current_node}")
-        print(f"AVAILABLE TAXI NODES: {detective.taxi_nodes_available}")
-        print(f"AVAILABLE BUS NODES: {detective.bus_nodes_available}")
-        print(f"AVAILABLE UNDERGROUND NODES: {detective.underground_nodes_available}")
+        print(f"YOU HAVE {detective.taxi_tickets} TAXI TICKETS")
+        print(f"YOU HAVE {detective.bus_tickets} BUS TICKETS")
+        print(f"YOU HAVE {detective.underground_tickets} UNDERGROUND TICKETS")
 
 def main():
     detective_count = int(input("HOW MANY DETECTIVES ARE PLAYING?: "))
