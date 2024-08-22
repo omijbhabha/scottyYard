@@ -14,13 +14,15 @@ class Detective:
         self.taxi_nodes_available = stations_data[self.current_node]["taxi"]
         self.bus_nodes_available = stations_data[self.current_node]["bus"]
         self.underground_nodes_available = stations_data[self.current_node]["underground"]
+    def printAvailableNodes(self):
+        print()
+        print(f"TAXI NODES AVAILABLE: {self.taxi_nodes_available}")
+        print(f"BUS NODES AVAILABLE: {self.bus_nodes_available}")
+        print(f"UNDERGROUND NODES AVAILABLE: {self.underground_nodes_available}")
     def setNewNode(self):
         flag=0
         while flag==0:
-            print()
-            print(f"TAXI NODES AVAILABLE: {self.taxi_nodes_available}")
-            print(f"BUS NODES AVAILABLE: {self.bus_nodes_available}")
-            print(f"UNDERGROUND NODES AVAILABLE: {self.underground_nodes_available}")
+            printAvailableNodes()
             new_node=input(f"ENTER THE NEXT NODE FOR DETECTIVE {self.id}: ")
             if new_node in self.taxi_nodes_available:
                 self.current_node = new_node
@@ -53,15 +55,17 @@ class MrX:
         self.bus_nodes_available = stations_data[self.current_node]["bus"]
         self.underground_nodes_available = stations_data[self.current_node]["underground"]
         self.black_nodes_available = stations_data[self.current_node]["black"]
+    def printAvailableNodes(self):
+        print()
+        print(f"TAXI NODES AVAILABLE: {self.taxi_nodes_available}")
+        print(f"BUS NODES AVAILABLE: {self.bus_nodes_available}")
+        print(f"UNDERGROUND NODES AVAILABLE: {self.underground_nodes_available}")
+        print(f"BLACK FARE NODES AVAILABLE: {self.black_fare_tickets}")
     def setNewNode(self):
         ask_double_move=input=("DO YOU WANT TO USE DOUBLE FARE?")
         flag=0
         while flag==0:
-            print()
-            print(f"TAXI NODES AVAILABLE: {self.taxi_nodes_available}")
-            print(f"BUS NODES AVAILABLE: {self.bus_nodes_available}")
-            print(f"UNDERGROUND NODES AVAILABLE: {self.underground_nodes_available}")
-            new_node=input(f"ENTER THE NEXT NODE FOR DETECTIVE {self.id}: ")
+            printAvailableNodes()
             if new_node in self.taxi_nodes_available:
                 self.current_node = new_node
                 self.getAvailableNodes()
@@ -93,20 +97,40 @@ def updateGameDetectives(detectives):
         print(f"YOU HAVE {detective.underground_tickets} UNDERGROUND TICKETS")
 
 def main():
-    print(f"GAME STARTED\nMR.X HAS BEEN INITIALISED")
+    print(f"GAME STARTED\n\nMR.X HAS BEEN INITIALISED\n\n")
     mr_x=MrX()
-    mr_x.current_node = input(f"ENTER THE STARTING NODE FOR MR. X: ")
-    mr_x.getAvailableNodes()
 
-    detective_count = int(input("HOW MANY DETECTIVES ARE PLAYING?:"))
+    while True:
+        mr_x.current_node = input(f"ENTER THE STARTING NODE FOR MR. X: ")
+        try:
+            mr_x.getAvailableNodes()
+            break
+        except:
+            print(f"VALUE SEEMS TO BE WRONG PLEASE CHECK THE VALUE AND TRY AGAIN!\n")
+
+    while True:
+        detective_count = int(input("\n\nHOW MANY DETECTIVES ARE PLAYING?:"))
+        if (detective_count<6):
+            break
+        else:
+            print("MAXIMUM NUMBER OF PLAYERS CAN BE 6")
+
     detectives = []
 
     for id in range(1, detective_count + 1):
         detectives.append(Detective(id))
 
+    print("\n")
+
     for detective in detectives:
-        detective.current_node = input(f"ENTER THE STARTING NODE FOR DETECTIVE {detective.id}: ")
-        detective.getAvailableNodes()
+        while True:
+            detective.current_node = input(f"ENTER THE STARTING NODE FOR DETECTIVE {detective.id}: ")
+            try:
+                detective.getAvailableNodes()
+                break
+            except:
+                print(f"VALUE SEEMS TO BE WRONG PLEASE CHECK THE VALUE AND TRY AGAIN!\n")
+        print("\n")
 
     updateGameDetectives(detectives)
 
