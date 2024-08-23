@@ -19,10 +19,10 @@ def main():
 
     while True:
         detective_count = int(input("\n\nHOW MANY DETECTIVES ARE PLAYING?:"))
-        if (detective_count<=6):
+        if (detective_count<6 and detective_count>1):
             break
         else:
-            print("MAXIMUM NUMBER OF PLAYERS CAN BE 6")
+            print(f"MINIMUM 2 DETECTIVES AND MAXIMUM DETECTIVES CAN BE 5")
 
     detectives = []
 
