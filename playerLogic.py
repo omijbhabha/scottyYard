@@ -2,8 +2,9 @@ from loadData import loadStationsData
 stations_data = loadStationsData()
 
 class Player:    
-    def __init__(self, id=None):
+    def __init__(self, id=None, mr_x=None):
         self.id = id
+        self.mr_x = mr_x
         self.current_node = None
         self.taxi_tickets = 0
         self.bus_tickets = 0
@@ -19,6 +20,14 @@ class Player:
         print(f"TAXI NODES AVAILABLE: {self.taxi_nodes_available}")
         print(f"BUS NODES AVAILABLE: {self.bus_nodes_available}")
         print(f"UNDERGROUND NODES AVAILABLE: {self.underground_nodes_available}")
+    
+    def printAvailableTickets(self):
+        print()
+        print(f"YOU HAVE {self.taxi_tickets} TAXI TICKETS")
+        print(f"YOU HAVE {self.bus_tickets} BUS TICKETS")
+        print(f"YOU HAVE {self.underground_tickets} UNDERGROUND TICKETS")
+        print()
+
 
     def setNewNode(self):
         while True:
@@ -29,16 +38,16 @@ class Player:
             is_taxi = new_node in self.taxi_nodes_available
             is_bus = new_node in self.bus_nodes_available
             is_underground = new_node in self.underground_nodes_available
-            
+
             transport_methods = sum([is_taxi, is_bus, is_underground])
-            
+
             if transport_methods > 1:
                 transport_type = input("Choose the type of transportation (taxi, bus, underground): ").strip().lower()
-                
+
                 if transport_type not in {'taxi', 'bus', 'underground'}:
                     print("INVALID TRANSPORTATION TYPE! Please choose from 'taxi', 'bus', or 'underground'.")
                     continue
-                
+
                 if transport_type == 'taxi' and is_taxi:
                     chosen_transport = 'taxi'
                 elif transport_type == 'bus' and is_bus:
@@ -64,26 +73,32 @@ class Player:
                     self.current_node = new_node
                     self.getAvailableNodes()
                     self.taxi_tickets -= 1
+                    if self.mr_x:
+                        self.mr_x.taxi_tickets += 1
                     break
                 else:
                     print("NO TAXI TICKETS LEFT! Please choose another mode of transportation.")
                     continue
-                    
+
             elif chosen_transport == 'bus':
                 if self.bus_tickets > 0:
                     self.current_node = new_node
                     self.getAvailableNodes()
                     self.bus_tickets -= 1
+                    if self.mr_x:
+                        self.mr_x.bus_tickets += 1
                     break
                 else:
                     print("NO BUS TICKETS LEFT! Please choose another mode of transportation.")
                     continue
-                    
+
             elif chosen_transport == 'underground':
                 if self.underground_tickets > 0:
                     self.current_node = new_node
                     self.getAvailableNodes()
                     self.underground_tickets -= 1
+                    if self.mr_x:
+                        self.mr_x.underground_tickets += 1
                     break
                 else:
                     print("NO UNDERGROUND TICKETS LEFT! Please choose another mode of transportation.")
@@ -91,71 +106,9 @@ class Player:
         self.printAvailableTickets()
 
 
-    # def setNewNode(self):
-    #     while True:
-    #         self.printAvailableNodes()
-    #         new_node = input(f"\nENTER THE NEXT NODE FOR {'MR. X' if self.id is None else f'DETECTIVE {self.id}'}: ")
-
-    #         if new_node in self.taxi_nodes_available:
-    #             ticket_type = 'taxi'
-    #         elif new_node in self.bus_nodes_available:
-    #             ticket_type = 'bus'
-    #         elif new_node in self.underground_nodes_available:
-    #             ticket_type = 'underground'
-    #         else:
-    #             print("INVALID ARGUMENT CAN NOT ACCESS THAT NODE!")
-    #             continue
-
-    #         if ticket_type == 'taxi':
-    #             if self.taxi_tickets > 0:
-    #                 self.taxi_tickets -= 1
-    #             else:
-    #                 print("NO TAXI TICKETS LEFT!")
-    #                 continue
-    #         elif ticket_type == 'bus':
-    #             if self.bus_tickets > 0:
-    #                 self.bus_tickets -= 1
-    #             else:
-    #                 print("NO BUS TICKETS LEFT!")
-    #                 continue
-    #         elif ticket_type == 'underground':
-    #             if self.underground_tickets > 0:
-    #                 self.underground_tickets -= 1
-    #             else:
-    #                 print("NO UNDERGROUND TICKETS LEFT!")
-    #                 continue
-            
-    #         break
-            
-            # if new_node in self.taxi_nodes_available:
-            #     self.current_node = new_node
-            #     self.getAvailableNodes()
-            #     self.taxi_tickets -= 1
-            #     break
-            # elif new_node in self.bus_nodes_available:
-            #     self.current_node = new_node
-            #     self.getAvailableNodes()
-            #     self.bus_tickets -= 1
-            #     break
-            # elif new_node in self.underground_nodes_available:
-            #     self.current_node = new_node
-            #     self.getAvailableNodes()
-            #     self.underground_tickets -= 1
-            #     break
-            # else:
-            #     print("INVALID ARGUMENT CAN NOT ACCESS THAT NODE!")
-
-
-    def printAvailableTickets(self):
-        print()
-        print(f"YOU HAVE {self.taxi_tickets} TAXI TICKETS")
-        print(f"YOU HAVE {self.bus_tickets} BUS TICKETS")
-        print(f"YOU HAVE {self.underground_tickets} UNDERGROUND TICKETS")
-        print()
-
 class Detective(Player):
-    def __init__(self, id):
-        super().__init__(id)
+    def __init__(self, id, mr_x):
+        super().__init__(id, mr_x)
         self.taxi_tickets = 10
         self.bus_tickets = 8
         self.underground_tickets = 4
