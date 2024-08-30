@@ -9,32 +9,31 @@ class Player:
         self.taxi_tickets = 0
         self.bus_tickets = 0
         self.underground_tickets = 0
-
+    
     def getAvailableNodes(self):
         self.taxi_nodes_available = stations_data[self.current_node]["taxi"]
         self.bus_nodes_available = stations_data[self.current_node]["bus"]
         self.underground_nodes_available = stations_data[self.current_node]["underground"]
-
+    
     def printAvailableNodes(self):
         print()
-        print(f"CURRENT NODE: {self.current_node}")
         print(f"TAXI NODES AVAILABLE: {self.taxi_nodes_available}")
         print(f"BUS NODES AVAILABLE: {self.bus_nodes_available}")
         print(f"UNDERGROUND NODES AVAILABLE: {self.underground_nodes_available}")
+    
+    def printAvailableTickets(self):
+        print()
+        print(f"YOU HAVE {self.taxi_tickets} TAXI TICKETS")
+        print(f"YOU HAVE {self.bus_tickets} BUS TICKETS")
+        print(f"YOU HAVE {self.underground_tickets} UNDERGROUND TICKETS")
+        print()
 
-    def setNewNode(self, all_players):
+
+    def setNewNode(self):
         while True:
             self.printAvailableTickets()
             self.printAvailableNodes()
             new_node = input(f"\nENTER THE NEXT NODE FOR {'MR. X' if self.id is None else f'DETECTIVE {self.id}'}: ")
-
-            if not isinstance(self, MrX) and new_node == self.mr_x.current_node:
-                print(f"Detective {self.id} has caught Mr. X at node {new_node}!")
-                return "GAME_OVER"
-
-            if any(player.current_node == new_node for player in all_players if player != self and not isinstance(player, MrX)):
-                print("This node is already occupied by another detective. Please choose a different node.")
-                continue
 
             is_taxi = new_node in self.taxi_nodes_available
             is_bus = new_node in self.bus_nodes_available
@@ -74,7 +73,7 @@ class Player:
                     self.current_node = new_node
                     self.getAvailableNodes()
                     self.taxi_tickets -= 1
-                    if self.mr_x and not isinstance(self, MrX):
+                    if self.mr_x:
                         self.mr_x.taxi_tickets += 1
                     break
                 else:
@@ -86,7 +85,7 @@ class Player:
                     self.current_node = new_node
                     self.getAvailableNodes()
                     self.bus_tickets -= 1
-                    if self.mr_x and not isinstance(self, MrX):
+                    if self.mr_x:
                         self.mr_x.bus_tickets += 1
                     break
                 else:
@@ -98,22 +97,14 @@ class Player:
                     self.current_node = new_node
                     self.getAvailableNodes()
                     self.underground_tickets -= 1
-                    if self.mr_x and not isinstance(self, MrX):
+                    if self.mr_x:
                         self.mr_x.underground_tickets += 1
                     break
                 else:
                     print("NO UNDERGROUND TICKETS LEFT! Please choose another mode of transportation.")
                     continue
         self.printAvailableTickets()
-        return "MOVE_COMPLETE"
 
-    def printAvailableTickets(self):
-        print()
-        print(f"CURRENT NODE: {self.current_node}")
-        print(f"YOU HAVE {self.taxi_tickets} TAXI TICKETS")
-        print(f"YOU HAVE {self.bus_tickets} BUS TICKETS")
-        print(f"YOU HAVE {self.underground_tickets} UNDERGROUND TICKETS")
-        print()
 
 class Detective(Player):
     def __init__(self, id, mr_x):
@@ -130,28 +121,19 @@ class MrX(Player):
         self.underground_tickets = 3
         self.black_fare_tickets = 5
         self.double_move_tickets = 2
-
+    
     def getAvailableNodes(self):
         super().getAvailableNodes()
         self.black_nodes_available = stations_data[self.current_node]["black"]
-
+    
     def printAvailableNodes(self):
         super().printAvailableNodes()
         print(f"BLACK FARE NODES AVAILABLE: {self.black_nodes_available}")
 
-    def askForDoubleMove(self, all_players):
+    def askForDoubleMove(self):
         ask_double_move = input("DO YOU WANT TO USE DOUBLE FARE? (y/n): ")
         if 'y' in ask_double_move:
             self.double_move_tickets -= 1
             print(f"\nYOU HAVE USED DOUBLE FARE, YOU WILL MOVE TWICE")
-            result = self.setNewNode(all_players)
-            if result == "GAME_OVER":
-                return result
+            self.setNewNode()
             print(f"\nMOVE 1 COMPLETE PLEASE MOVE AGAIN")
-            return self.setNewNode(all_players)
-        return "MOVE_COMPLETE"
-
-    def printAvailableTickets(self):
-        super().printAvailableTickets()
-        print(f"YOU HAVE {self.black_fare_tickets} BLACK FARE TICKETS")
-        print(f"YOU HAVE {self.double_move_tickets} DOUBLE MOVE TICKETS")
