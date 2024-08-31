@@ -15,25 +15,30 @@ class Player:
         self.underground_nodes_available = stations_data[self.current_node]["underground"]
     
     def printAvailableNodes(self):
-        print()
+        print(f"CURRENT NODE: {self.current_node}")
         print(f"TAXI NODES AVAILABLE: {self.taxi_nodes_available}")
         print(f"BUS NODES AVAILABLE: {self.bus_nodes_available}")
         print(f"UNDERGROUND NODES AVAILABLE: {self.underground_nodes_available}")
 
     def setNewNode(self):
         while True:
+            print(f"{'MR. X' if self.id is None else f'DETECTIVE {self.id}'}'s TURN")
+            print()
             self.printAvailableTickets()
+            print()
             self.printAvailableNodes()
-            new_node = input(f"\nENTER THE NEXT NODE FOR {'MR. X' if self.id is None else f'DETECTIVE {self.id}'}: ")
+            print()
+            new_node = input(f"ENTER THE NEXT NODE FOR {'MR. X' if self.id is None else f'DETECTIVE {self.id}'}: ")
 
             is_taxi = new_node in self.taxi_nodes_available
             is_bus = new_node in self.bus_nodes_available
             is_underground = new_node in self.underground_nodes_available
-            
+
             transport_methods = sum([is_taxi, is_bus, is_underground])
             
             if transport_methods > 1:
                 transport_type = input("Choose the type of transportation (taxi, bus, underground): ").strip().lower()
+                print()
                 
                 if transport_type not in {'taxi', 'bus', 'underground'}:
                     print("INVALID TRANSPORTATION TYPE! Please choose from 'taxi', 'bus', or 'underground'.")
@@ -147,11 +152,9 @@ class Player:
 
 
     def printAvailableTickets(self):
-        print()
         print(f"YOU HAVE {self.taxi_tickets} TAXI TICKETS")
         print(f"YOU HAVE {self.bus_tickets} BUS TICKETS")
         print(f"YOU HAVE {self.underground_tickets} UNDERGROUND TICKETS")
-        print()
 
 class Detective(Player):
     def __init__(self, id):
@@ -181,6 +184,11 @@ class MrX(Player):
         ask_double_move = input("DO YOU WANT TO USE DOUBLE FARE? (y/n): ")
         if 'y' in ask_double_move:
             self.double_move_tickets -= 1
-            print(f"\nYOU HAVE USED DOUBLE FARE, YOU WILL MOVE TWICE")
+            print(f"YOU HAVE USED DOUBLE FARE, YOU WILL MOVE TWICE")
             self.setNewNode()
-            print(f"\nMOVE 1 COMPLETE PLEASE MOVE AGAIN")
+            print(f"MOVE 1 COMPLETE PLEASE MOVE AGAIN")
+    
+    def printAvailableTickets(self):
+        super().printAvailableTickets()
+        print(f"YOU HAVE {self.black_fare_tickets} BLACK FARE TICKETS")
+        print(f"YOU HAVE {self.double_move_tickets} DOUBLE MOVE TICKETS")
