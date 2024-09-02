@@ -28,6 +28,11 @@ def checkGameEnd(active_nodes):
         return 1
     else:
         return 0
+    
+def revealMrX(mr_x):
+    printSeparator()
+    print(f"Mr X is on node {mr_x.current_node}")
+    printSeparator()
 
 def main():
     print(f"GAME STARTED \nMR.X HAS BEEN INITIALISED")
@@ -77,14 +82,22 @@ def main():
                 else:
                     continue
             printSeparator()
+    
+    turn=1
+    revealTurns=[3,8,13,18,24]
 
     while True:
+        if turn in revealTurns:
+            revealMrX(mr_x)
+        if turn>24:
+            print("Mr X won, Detectives could not find in time")
         printSeparator()
         updateGameMrX(mr_x, active_nodes)
         if checkGameEnd(active_nodes): break
         printSeparator()
         updateGameDetectives(detectives, active_nodes)
         if checkGameEnd(active_nodes): break
+        turn+=1
 
 
 if __name__ == "__main__":
