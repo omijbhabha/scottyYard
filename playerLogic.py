@@ -21,7 +21,7 @@ class Player:
         print(f"BUS NODES AVAILABLE: {self.bus_nodes_available}")
         print(f"UNDERGROUND NODES AVAILABLE: {self.underground_nodes_available}")
 
-    def setNewNode(self):
+    def setNewNode(self,active_nodes):
         while True:
             print(f"{'MR. X' if self.id is None else f'DETECTIVE {self.id}'}'s TURN")
             print()
@@ -29,7 +29,13 @@ class Player:
             print()
             self.printAvailableNodes()
             print()
-            new_node = input(f"ENTER THE NEXT NODE FOR {'MR. X' if self.id is None else f'DETECTIVE {self.id}'}: ")
+            flag=0
+            while flag==0:
+                new_node = input(f"ENTER THE NEXT NODE FOR {'MR. X' if self.id is None else f'DETECTIVE {self.id}'}: ")
+                if new_node in active_nodes[1:len(active_nodes)]:
+                    print("THIS NODE IS ALREADY OCCUPIED!, PLEASE TRY ANOTHER NODE!")
+                else:
+                    flag=1
 
             is_taxi = new_node in self.taxi_nodes_available
             is_bus = new_node in self.bus_nodes_available

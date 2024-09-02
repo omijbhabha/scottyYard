@@ -5,7 +5,7 @@ from playerLogic import *
 
 def updateGameDetectives(detectives, active_nodes):
     for detective in detectives:
-        detective.setNewNode()
+        detective.setNewNode(active_nodes)
         active_nodes[detective.id] = detective.current_node
         printSeparator()
 
@@ -13,7 +13,7 @@ def updateGameMrX(mr_x, active_nodes):
     print("MR X'S TURN!!!")
     if mr_x.double_move_tickets > 1:
         mr_x.askForDoubleMove()
-    mr_x.setNewNode()
+    mr_x.setNewNode(active_nodes)
     active_nodes[0] = mr_x.current_node
 
 def printSeparator():
