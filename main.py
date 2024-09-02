@@ -21,6 +21,14 @@ def printSeparator():
     print("*" * 50)
     print()
 
+def checkGameEnd(active_nodes):
+    if active_nodes[0] in active_nodes[1:len(active_nodes)]:
+        printSeparator()
+        print("GAME FINISHED, MR-X IS CAUGHT")
+        return 1
+    else:
+        return 0
+
 def main():
     print(f"GAME STARTED \nMR.X HAS BEEN INITIALISED")
 
@@ -70,14 +78,14 @@ def main():
                     continue
             printSeparator()
 
-    while active_nodes[0] not in active_nodes[1:len(active_nodes)]:
+    while True:
         printSeparator()
         updateGameMrX(mr_x, active_nodes)
+        if checkGameEnd(active_nodes): break
         printSeparator()
         updateGameDetectives(detectives, active_nodes)
+        if checkGameEnd(active_nodes): break
 
-    print("GAME FINISHED, MR-X IS CAUGHT")
 
 if __name__ == "__main__":
     main()
-#change just to check something
